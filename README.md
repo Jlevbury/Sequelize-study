@@ -109,6 +109,56 @@ Commonly used Sequelize methods along with use cases and explanations:
 
 Remember that all these methods return Promises, hence the use of `.then()` to handle the result.
 
+# Use of init() and extending Models
+The `init(attributes, options)` method is used to initialize a model in Sequelize. This is typically done when you want to extend the base Model class to include your custom methods or to set up associations.
+
+Here is a use case:
+
+```javascript
+const { Model, DataTypes, Sequelize } = require('sequelize');
+
+class User extends Model {
+  // Define custom methods here...
+  getFullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+}
+
+User.init({
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+}, {
+  sequelize, // We need to pass the connection instance
+  modelName: 'User' // We need to choose the model name
+});
+
+```
+
+**Step-by-step Explanation:**
+
+1. We first import the `Model` class, `DataTypes` object, and `Sequelize` function from the `sequelize` module.
+
+2. We then create a new class, `User`, which extends the base `Model` class. By extending `Model`, `User` inherits all its functionalities.
+
+3. Inside the `User` class, we define a custom instance method, `getFullName()`, which returns the full name of the user.
+
+4. We call the `init` method on `User` to initialize the model. `init` takes two arguments: `attributes` and `options`.
+
+5. `attributes` is an object that defines the model's attributes - in this case, `firstName` and `lastName`. Both are strings and we've set `allowNull` to `false` to enforce that every user must have these attributes.
+
+6. `options` is an object that sets the options for the model. We pass the Sequelize connection instance (`sequelize`) to tell Sequelize where to create the `User` table. We also set the `modelName` to 'User'.
+
+7. Now, we can use the `User` model to interact with the `Users` table in the database. Additionally, we can call `getFullName()` on instances of the `User` model to get a user's full name.
+
+Remember to replace `sequelize` with your own Sequelize connection instance.
+
+
 
 # Mock File structure
 
